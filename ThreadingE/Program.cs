@@ -44,12 +44,15 @@ namespace ThreadingE
 
             var thread = new Thread(() =>
             {
+                Console.WriteLine($"Thread number: {Thread.CurrentThread.ManagedThreadId} started");
                 Thread.Sleep(1000);
                 taskCompletionSource.TrySetResult(true);
+                Console.WriteLine($"Thread number: {Thread.CurrentThread.ManagedThreadId} ended");
             });
-            Console.WriteLine($"Thread number: {thread.ManagedThreadId}");
+            
             thread.Start();
             var test = taskCompletionSource.Task.Result;
+            Console.WriteLine(test);
         }
     }
 }
