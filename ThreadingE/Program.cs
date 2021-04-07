@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,26 +34,29 @@ namespace ThreadingE
                  Thread.Sleep(1000);
                  Console.WriteLine("thread 3");
              }).Start();
+            */
+
 
              new Thread(() =>
              {
                  Thread.Sleep(1000);
                  Console.WriteLine("thread 4");
-             }).Start(); */
+             })
+             { IsBackground = true }.Start(); 
 
-            var taskCompletionSource = new TaskCompletionSource<bool>();
 
-            var thread = new Thread(() =>
-            {
-                Console.WriteLine($"Thread number: {Thread.CurrentThread.ManagedThreadId} started");
-                Thread.Sleep(1000);
-                taskCompletionSource.TrySetResult(true);
-                Console.WriteLine($"Thread number: {Thread.CurrentThread.ManagedThreadId} ended");
-            });
-            
-            thread.Start();
-            var test = taskCompletionSource.Task.Result;
-            Console.WriteLine(test);
+            Enumerable.Range(0, 1000).ToList().ForEach(f =>
+             {
+                 ThreadPool.QueueUserWorkItem((o) =>
+                 {
+                     Console.WriteLine($"Thread number: {Thread.CurrentThread.ManagedThreadId} started");
+                     Thread.Sleep(1000);
+
+                     Console.WriteLine($"Thread number: {Thread.CurrentThread.ManagedThreadId} ended");
+                 });
+             });
+
+            Console.ReadLine();
         }
     }
 }
